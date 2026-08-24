@@ -3,19 +3,258 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BlocPrep Pro</title>
+  <title>BlocPrep Pro - Gestion bloc opératoire</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #f5f5f5; }
-    .container { display: flex; flex-direction: column; height: 100vh; background: white; }
-    .header { background: #2c3e50; color: white; padding: 16px; }
-    .header h1 { font-size: 24px; margin-bottom: 12px; }
-    .tabs { display: flex; gap: 8px; margin-top: 12px; }
-    .tab-btn { padding: 10px 16px; background: #ecf0f1; border: none; cursor: pointer; border-radius: 4px; font-weight: 600; }
-    .tab-btn.active { background: #3498db; color: white; }
-    .content { flex: 1; padding: 20px; overflow: auto; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: #fff;
+    }
+    .header {
+      background: #2c3e50;
+      color: white;
+      padding: 16px 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    .tab-btn {
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      background: #ecf0f1;
+      color: #333;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #3498db;
+      color: white;
+    }
+    .tab-btn:hover {
+      background: #95a5a6;
+    }
+    .content {
+      flex: 1;
+      overflow: auto;
+      padding: 20px;
+    }
+    .tab-content {
+      display: none;
+      height: 100%;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .intervention-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .intervention-btn {
+      padding: 12px 8px;
+      border: 1px solid #ddd;
+      background: #f9f9f9;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .intervention-btn.active {
+      background: #3498db;
+      color: white;
+      border-color: #3498db;
+    }
+    .intervention-btn:hover {
+      border-color: #3498db;
+    }
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .checklist-item:hover {
+      background: #f0f0f0;
+    }
+    .checklist-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #3498db;
+    }
+    .checklist-item.checked {
+      background: #e8f8f5;
+      opacity: 0.7;
+    }
+    .checklist-item.checked span {
+      text-decoration: line-through;
+      color: #95a5a6;
+    }
+    .planning-card {
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .planning-info h3 {
+      margin: 0;
+      font-size: 15px;
+      color: #2c3e50;
+    }
+    .planning-info p {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+    .delete-btn {
+      padding: 6px 10px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .delete-btn:hover {
+      background: #c0392b;
+    }
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      gap: 12px;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 12px;
+    }
+    .chat-message {
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .chat-message.own {
+      background: #3498db;
+      color: white;
+      margin-left: 40px;
+      text-align: right;
+    }
+    .chat-message.other {
+      background: #ecf0f1;
+      color: #333;
+      margin-right: 40px;
+    }
+    .chat-message-user {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      opacity: 0.7;
+    }
+    .chat-input-group {
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input-group input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .chat-input-group button {
+      padding: 10px 16px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .chat-input-group button:hover {
+      background: #2980b9;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #2c3e50;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: monospace;
+    }
+    .create-btn {
+      width: 100%;
+      padding: 12px;
+      background: #27ae60;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+    .create-btn:hover {
+      background: #229954;
+    }
+    .empty-state {
+      text-align: center;
+      color: #95a5a6;
+      padding: 40px 20px;
+    }
   </style>
 </head>
 <body>
@@ -23,24 +262,374 @@
     <div class="header">
       <h1>🏥 BlocPrep Pro</h1>
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('checklist')">✓ Checklists</button>
-        <button class="tab-btn" onclick="switchTab('planning')">📅 Planning</button>
-        <button class="tab-btn" onclick="switchTab('chat')">💬 Chat</button>
+        <button class="tab-btn active" onclick="switchTab('checklist', this)">
+          ✓ Checklists
+        </button>
+        <button class="tab-btn" onclick="switchTab('planning', this)">
+          📅 Planning
+        </button>
+        <button class="tab-btn" onclick="switchTab('chat', this)">
+          💬 Chat
+        </button>
+        <button class="tab-btn" onclick="switchTab('interventions', this)">
+          ➕ Ajouter
+        </button>
       </div>
     </div>
+
     <div class="content">
-      <div class="tab-content active" id="checklist"><h2>Checklists</h2><p>Fonctionne! ✓</p></div>
-      <div class="tab-content" id="planning"><h2>Planning</h2><p>Fonctionne! ✓</p></div>
-      <div class="tab-content" id="chat"><h2>Chat</h2><p>Fonctionne! ✓</p></div>
+      <!-- CHECKLIST TAB -->
+      <div class="tab-content active" id="checklist">
+        <div class="intervention-list" id="intervention-list"></div>
+        <div id="checklist-header">
+          <h2 id="checklist-title" style="margin-bottom: 16px; color: #2c3e50;"></h2>
+        </div>
+        <div id="checklist"></div>
+        <div id="checklist-empty" class="empty-state">
+          Sélectionne une intervention
+        </div>
+      </div>
+
+      <!-- PLANNING TAB -->
+      <div class="tab-content" id="planning">
+        <h2 style="margin-bottom: 16px; color: #2c3e50;">Planning du jour</h2>
+        <div id="planning-content"></div>
+        <div id="planning-empty" class="empty-state">
+          Aucune intervention programmée
+        </div>
+        <div style="margin-top: 24px; background: #ecf0f1; padding: 16px; border-radius: 6px;">
+          <h3 style="margin: 0 0 12px; color: #2c3e50;">Ajouter une intervention au planning</h3>
+          <div class="form-group">
+            <label>Heure (ex: 09:30)</label>
+            <input type="time" id="planning-time">
+          </div>
+          <div class="form-group">
+            <label>Nom intervention</label>
+            <input type="text" id="planning-name" placeholder="Chirurgie du genou">
+          </div>
+          <div class="form-group">
+            <label>Bloc</label>
+            <input type="number" id="planning-bloc" placeholder="1" min="1">
+          </div>
+          <button class="create-btn" onclick="addToPlanning()">Ajouter au planning</button>
+        </div>
+      </div>
+
+      <!-- CHAT TAB -->
+      <div class="tab-content" id="chat">
+        <div class="chat-container">
+          <h2 style="color: #2c3e50;">Chat équipe</h2>
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="chat-input-group">
+            <input type="text" id="chat-input" placeholder="Message..." onkeypress="handleChatKeyPress(event)">
+            <button onclick="sendChatMessage()">Envoyer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERVENTIONS TAB -->
+      <div class="tab-content" id="interventions">
+        <h2 style="margin-bottom: 16px; color: #2c3e50;">Ajouter une intervention</h2>
+        <div style="background: #ecf0f1; padding: 16px; border-radius: 6px;">
+          <div class="form-group">
+            <label>Nom de l'intervention</label>
+            <input type="text" id="new-intervention-name" placeholder="Ex: Arthroscopie genou">
+          </div>
+          <div class="form-group">
+            <label>Catégorie</label>
+            <select id="new-intervention-category">
+              <option value="Table">Table</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Items à vérifier (un par ligne)</label>
+            <textarea id="new-intervention-items" placeholder="Table 1&#10;Table 2"></textarea>
+          </div>
+          <button class="create-btn" onclick="createIntervention()">Créer intervention</button>
+        </div>
+      </div>
     </div>
   </div>
+
   <script>
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabName).classList.add('active');
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      event.target.classList.add('active');
+    const interventionsDefault = {
+      'urologie': {
+        label: 'Urologie',
+        icon: '🔬',
+        tables: [
+          { id: 1, name: 'Table 1 buste', category: 'Table' },
+          { id: 2, name: 'Table 2 gyneco godé', category: 'Table' }
+        ]
+      },
+      'orthopedie': {
+        label: 'Orthopédie',
+        icon: '🦴',
+        tables: [
+          { id: 1, name: 'Table 1 gastro rallonge hanche', category: 'Table' }
+        ]
+      },
+      'gynecologie': {
+        label: 'Gynécologie',
+        icon: '👩‍⚕️',
+        tables: [
+          { id: 1, name: 'Table 1 gyneco godé', category: 'Table' },
+          { id: 2, name: 'Table 2 buste', category: 'Table' }
+        ]
+      },
+      'membres-superieurs': {
+        label: 'Membres supérieurs',
+        icon: '💪',
+        tables: [
+          { id: 1, name: 'Table 1 plateau plat', category: 'Table' },
+          { id: 2, name: 'Table 2 gastro plat', category: 'Table' }
+        ]
+      },
+      'chirurgie-vasculaire': {
+        label: 'Chirurgie vasculaire',
+        icon: '🫀',
+        tables: [
+          { id: 1, name: 'Table 1 plateau plat', category: 'Table' }
+        ]
+      },
+      'cardiologie': {
+        label: 'Cardiologie',
+        icon: '❤️',
+        tables: [
+          { id: 1, name: 'Table 1 brancard', category: 'Table' },
+          { id: 2, name: 'Table 2 plateau plat tete a l\'envers', category: 'Table' }
+        ]
+      },
+      'pneumologie': {
+        label: 'Pneumologie',
+        icon: '🫁',
+        tables: [
+          { id: 1, name: 'Table 1', category: 'Table' },
+          { id: 2, name: 'Table 2', category: 'Table' }
+        ]
+      },
+      'chirurgie-viscerale': {
+        label: 'Chirurgie viscérale',
+        icon: '🏥',
+        tables: [
+          { id: 1, name: 'Table 1 buste', category: 'Table' },
+          { id: 2, name: 'Table 2 gyneco godé', category: 'Table' },
+          { id: 3, name: 'Table 3 gastro 3 rallonge', category: 'Table' }
+        ]
+      }
+    };
+
+    let interventions = JSON.parse(JSON.stringify(interventionsDefault));
+    let currentIntervention = null;
+    let checklist = {};
+    let plannedInterventions = [];
+    let chatMessages = [];
+    let currentUser = 'Brancardier ' + Math.floor(Math.random() * 999);
+
+    // Initialize
+    Object.keys(interventions).forEach(key => {
+      checklist[key] = {};
+      interventions[key].tables.forEach(table => {
+        checklist[key][table.id] = false;
+      });
+    });
+
+    // Load from localStorage
+    const saved = localStorage.getItem('blocprep-data');
+    if (saved) {
+      const data = JSON.parse(saved);
+      interventions = { ...interventionsDefault, ...(data.interventions || {}) };
+      checklist = data.checklist || checklist;
+      plannedInterventions = data.plannedInterventions || [];
+      chatMessages = data.chatMessages || [];
     }
+
+    function saveData() {
+      localStorage.setItem('blocprep-data', JSON.stringify({
+        interventions, checklist, plannedInterventions, chatMessages
+      }));
+    }
+
+    function renderInterventions() {
+      const list = document.getElementById('intervention-list');
+      list.innerHTML = '';
+      Object.entries(interventions).forEach(([key, intervention]) => {
+        const btn = document.createElement('button');
+        btn.className = 'intervention-btn' + (currentIntervention === key ? ' active' : '');
+        btn.innerHTML = `${intervention.icon}<br>${intervention.label}`;
+        btn.onclick = () => {
+          currentIntervention = key;
+          renderInterventions();
+          renderChecklist();
+        };
+        list.appendChild(btn);
+      });
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById('checklist');
+      const empty = document.getElementById('checklist-empty');
+      const title = document.getElementById('checklist-title');
+
+      if (!currentIntervention) {
+        container.innerHTML = '';
+        empty.style.display = 'block';
+        title.textContent = '';
+        return;
+      }
+
+      empty.style.display = 'none';
+      const intervention = interventions[currentIntervention];
+      const current_checklist = checklist[currentIntervention];
+      title.textContent = intervention.label;
+
+      container.innerHTML = '';
+      intervention.tables.forEach(table => {
+        const label = document.createElement('label');
+        label.className = 'checklist-item' + (current_checklist[table.id] ? ' checked' : '');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = current_checklist[table.id] || false;
+
+        const span = document.createElement('span');
+        span.textContent = table.name;
+
+        checkbox.onchange = (e) => {
+          current_checklist[table.id] = e.target.checked;
+          saveData();
+          renderChecklist();
+        };
+
+        label.appendChild(checkbox);
+        label.appendChild(span);
+        container.appendChild(label);
+      });
+    }
+
+    function renderPlanning() {
+      const content = document.getElementById('planning-content');
+      const empty = document.getElementById('planning-empty');
+
+      if (plannedInterventions.length === 0) {
+        content.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+      content.innerHTML = '';
+      plannedInterventions.forEach((planned, idx) => {
+        const card = document.createElement('div');
+        card.className = 'planning-card';
+        card.innerHTML = `
+          <div class="planning-info">
+            <h3>${planned.time} - ${planned.name}</h3>
+            <p>Bloc ${planned.bloc}</p>
+          </div>
+          <button class="delete-btn" onclick="deletePlanning(${idx})">Supprimer</button>
+        `;
+        content.appendChild(card);
+      });
+    }
+
+    function addToPlanning() {
+      const time = document.getElementById('planning-time').value;
+      const name = document.getElementById('planning-name').value.trim();
+      const bloc = document.getElementById('planning-bloc').value.trim();
+
+      if (!time || !name || !bloc) {
+        alert('Remplis tous les champs');
+        return;
+      }
+
+      plannedInterventions.push({ time, name, bloc });
+      document.getElementById('planning-time').value = '';
+      document.getElementById('planning-name').value = '';
+      document.getElementById('planning-bloc').value = '';
+      saveData();
+      renderPlanning();
+    }
+
+    function deletePlanning(idx) {
+      plannedInterventions.splice(idx, 1);
+      saveData();
+      renderPlanning();
+    }
+
+    function renderChat() {
+      const messagesDiv = document.getElementById('chat-messages');
+      messagesDiv.innerHTML = '';
+      chatMessages.forEach(msg => {
+        const msgEl = document.createElement('div');
+        msgEl.className = 'chat-message ' + (msg.user === currentUser ? 'own' : 'other');
+        msgEl.innerHTML = `
+          <div class="chat-message-user">${msg.user}</div>
+          <div>${msg.text}</div>
+        `;
+        messagesDiv.appendChild(msgEl);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      if (input.value.trim()) {
+        chatMessages.push({
+          user: currentUser,
+          text: input.value,
+          time: new Date().toLocaleTimeString()
+        });
+        input.value = '';
+        saveData();
+        renderChat();
+      }
+    }
+
+    function handleChatKeyPress(e) {
+      if (e.key === 'Enter') sendChatMessage();
+    }
+
+    function createIntervention() {
+      const name = document.getElementById('new-intervention-name').value.trim();
+      const itemsText = document.getElementById('new-intervention-items').value.trim();
+
+      if (!name || !itemsText) {
+        alert('Remplis tous les champs');
+        return;
+      }
+
+      const items = itemsText.split('\n').filter(x => x.trim()).map((item, idx) => ({
+        id: idx + 1,
+        name: item.trim(),
+        category: 'Table'
+      }));
+
+      const key = 'custom-' + Date.now();
+      interventions[key] = { label: name, icon: '➕', tables: items };
+      checklist[key] = {};
+      items.forEach(item => { checklist[key][item.id] = false; });
+
+      saveData();
+      document.getElementById('new-intervention-name').value = '';
+      document.getElementById('new-intervention-items').value = '';
+      renderInterventions();
+      alert('✓ Intervention créée');
+    }
+
+    function switchTab(tabName, btn) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (tabName === 'chat') renderChat();
+      if (tabName === 'planning') renderPlanning();
+    }
+
+    // Initial render
+    renderInterventions();
+    renderChecklist();
   </script>
 </body>
 </html>
