@@ -6,254 +6,613 @@
   <title>BlocPrep Pro - Gestion bloc opératoire</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f5f5f5;
-      color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: #f8f9fa;
+      color: #2c3e50;
     }
+
     .container {
       display: flex;
       flex-direction: column;
       height: 100vh;
-      background: #fff;
+      background: white;
     }
+
+    /* HEADER */
     .header {
-      background: #2c3e50;
-      color: white;
-      padding: 16px 20px;
-      border-bottom: 1px solid #ddd;
+      background: white;
+      border-bottom: 1px solid #e8eef5;
+      padding: 20px 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
+
     .header h1 {
-      font-size: 24px;
-      margin-bottom: 12px;
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a2332;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
     }
+
     .tabs {
       display: flex;
-      gap: 8px;
+      gap: 12px;
       overflow-x: auto;
-      padding-bottom: 8px;
+      border-bottom: 1px solid #e8eef5;
+      margin-left: -24px;
+      margin-right: -24px;
+      padding: 0 24px;
     }
+
     .tab-btn {
-      padding: 10px 16px;
+      padding: 12px 20px;
       font-size: 13px;
       font-weight: 600;
       border: none;
-      border-radius: 6px;
-      background: #ecf0f1;
-      color: #333;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      color: #7a8fa3;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      position: relative;
+      bottom: -1px;
     }
+
     .tab-btn.active {
-      background: #3498db;
-      color: white;
+      color: #2c3e50;
+      border-bottom-color: #1a2332;
     }
+
     .tab-btn:hover {
-      background: #95a5a6;
+      color: #2c3e50;
     }
+
+    /* CONTENT */
     .content {
       flex: 1;
       overflow: auto;
-      padding: 20px;
+      padding: 32px 28px;
+      background: #f8f9fa;
     }
+
     .tab-content {
       display: none;
-      height: 100%;
+      animation: fadeIn 0.3s ease;
     }
+
     .tab-content.active {
       display: block;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* INTERVENTION LIST */
     .intervention-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 8px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
     }
+
     .intervention-btn {
-      padding: 12px 8px;
-      border: 1px solid #ddd;
-      background: #f9f9f9;
-      border-radius: 6px;
+      padding: 18px 14px;
+      border: 1px solid #d8dfe8;
+      background: white;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 12px;
-      font-weight: 500;
-      transition: all 0.2s;
+      font-weight: 600;
+      transition: all 0.25s ease;
       text-align: center;
+      color: #2c3e50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
-    .intervention-btn.active {
-      background: #3498db;
-      color: white;
-      border-color: #3498db;
+
+    .intervention-btn > span:first-child {
+      font-size: 28px;
+      line-height: 1;
     }
+
     .intervention-btn:hover {
-      border-color: #3498db;
+      border-color: #c0cad5;
+      background: #f8f9fa;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
     }
+
+    .intervention-btn.active {
+      background: #1a2332;
+      color: white;
+      border-color: #1a2332;
+      box-shadow: 0 2px 8px rgba(26, 35, 50, 0.12);
+    }
+
+    /* TITLES */
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a2332;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #e8eef5;
+      padding-bottom: 16px;
+    }
+
+    /* CHECKLIST */
     .checklist-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px;
-      background: #f9f9f9;
-      border: 1px solid #eee;
+      gap: 14px;
+      padding: 14px 16px;
+      background: white;
+      border: 1px solid #d8dfe8;
       border-radius: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
+
     .checklist-item:hover {
-      background: #f0f0f0;
+      border-color: #c0cad5;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+      background: #f8f9fa;
     }
+
     .checklist-item input[type="checkbox"] {
       width: 18px;
       height: 18px;
       cursor: pointer;
-      accent-color: #3498db;
+      accent-color: #1a2332;
+      border-radius: 3px;
+      flex-shrink: 0;
     }
+
     .checklist-item.checked {
-      background: #e8f8f5;
-      opacity: 0.7;
+      background: #f0f4f8;
+      border-color: #d8dfe8;
     }
+
     .checklist-item.checked span {
       text-decoration: line-through;
-      color: #95a5a6;
+      color: #a0aab8;
+      font-weight: 500;
     }
-    .planning-card {
-      background: #f9f9f9;
-      border: 1px solid #eee;
-      border-radius: 6px;
-      padding: 16px;
-      margin-bottom: 12px;
+
+    /* AGENDA */
+    .agenda-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+
+    .calendar-wrapper {
+      background: white;
+      border: 1px solid #d8dfe8;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      height: fit-content;
+    }
+
+    .calendar-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 20px;
     }
-    .planning-info h3 {
-      margin: 0;
-      font-size: 15px;
-      color: #2c3e50;
+
+    .calendar-header button {
+      background: #f5f7fa;
+      border: 1px solid #d8dfe8;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.25s ease;
     }
-    .planning-info p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: #7f8c8d;
+
+    .calendar-header button:hover {
+      background: #e8eef5;
+      border-color: #c0cad5;
     }
-    .delete-btn {
-      padding: 6px 10px;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 4px;
+
+    .calendar-month {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a2332;
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .calendar-weekday {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #7a8fa3;
+      padding: 8px 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #e8eef5;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 12px;
+      font-weight: 600;
+      color: #2c3e50;
+      background: white;
+      transition: all 0.25s ease;
+      position: relative;
     }
-    .delete-btn:hover {
-      background: #c0392b;
+
+    .calendar-day:hover {
+      border-color: #c0cad5;
+      background: #f8f9fa;
     }
+
+    .calendar-day.today {
+      background: #f0f4f8;
+      border-color: #1a2332;
+      color: #1a2332;
+    }
+
+    .calendar-day.selected {
+      background: #1a2332;
+      color: white;
+      border-color: #1a2332;
+    }
+
+    .calendar-day.has-events::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      width: 4px;
+      height: 4px;
+      background: #d32f2f;
+      border-radius: 50%;
+    }
+
+    .calendar-day.other-month {
+      color: #c0cad5;
+      cursor: default;
+    }
+
+    .agenda-events {
+      background: white;
+      border: 1px solid #d8dfe8;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .agenda-day-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a2332;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e8eef5;
+    }
+
+    .agenda-event {
+      background: #f8f9fa;
+      border-left: 4px solid #1a2332;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      transition: all 0.25s ease;
+    }
+
+    .agenda-event:hover {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      background: white;
+    }
+
+    .agenda-event-time {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a2332;
+      margin-bottom: 4px;
+    }
+
+    .agenda-event-name {
+      font-size: 12px;
+      color: #7a8fa3;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .agenda-event-bloc {
+      font-size: 11px;
+      color: #a0aab8;
+      font-weight: 600;
+    }
+
+    .agenda-empty {
+      text-align: center;
+      color: #a0aab8;
+      padding: 40px 20px;
+      font-size: 14px;
+    }
+
+    .agenda-form {
+      background: #f8f9fa;
+      border: 1px solid #d8dfe8;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .agenda-form h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a2332;
+      margin-bottom: 16px;
+    }
+
+    /* CHAT */
     .chat-container {
       display: flex;
       flex-direction: column;
       height: 100%;
-      gap: 12px;
+      gap: 14px;
     }
+
     .chat-messages {
       flex: 1;
       overflow-y: auto;
-      background: #f9f9f9;
-      border: 1px solid #eee;
-      border-radius: 6px;
-      padding: 12px;
+      background: white;
+      border: 1px solid #d8dfe8;
+      border-radius: 8px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
+
     .chat-message {
-      margin-bottom: 10px;
-      padding: 10px 12px;
+      padding: 10px 14px;
       border-radius: 6px;
       font-size: 13px;
+      line-height: 1.4;
     }
+
     .chat-message.own {
-      background: #3498db;
+      background: #1a2332;
       color: white;
-      margin-left: 40px;
+      margin-left: auto;
+      max-width: 70%;
       text-align: right;
     }
+
     .chat-message.other {
-      background: #ecf0f1;
-      color: #333;
-      margin-right: 40px;
+      background: #f0f4f8;
+      color: #2c3e50;
+      margin-right: auto;
+      max-width: 70%;
+      border: 1px solid #d8dfe8;
     }
+
     .chat-message-user {
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       margin-bottom: 4px;
       opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
+
     .chat-input-group {
       display: flex;
-      gap: 8px;
+      gap: 10px;
     }
+
     .chat-input-group input {
       flex: 1;
-      padding: 10px 12px;
-      border: 1px solid #ddd;
+      padding: 12px 14px;
+      border: 1px solid #d8dfe8;
       border-radius: 6px;
       font-size: 13px;
+      font-family: inherit;
+      color: #2c3e50;
+      background: white;
+      transition: all 0.25s ease;
     }
+
+    .chat-input-group input:focus {
+      outline: none;
+      border-color: #1a2332;
+      box-shadow: 0 0 0 2px rgba(26, 35, 50, 0.08);
+    }
+
     .chat-input-group button {
-      padding: 10px 16px;
-      background: #3498db;
+      padding: 12px 20px;
+      background: #1a2332;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
+      font-size: 12px;
+      transition: all 0.25s ease;
+      white-space: nowrap;
     }
+
     .chat-input-group button:hover {
-      background: #2980b9;
+      background: #0f1419;
+      box-shadow: 0 2px 6px rgba(26, 35, 50, 0.12);
     }
+
+    /* FORMS */
     .form-group {
       margin-bottom: 16px;
     }
+
     .form-group label {
       display: block;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
       margin-bottom: 6px;
-      color: #2c3e50;
+      color: #1a2332;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
+
     .form-group input,
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #ddd;
+      padding: 12px 14px;
+      border: 1px solid #d8dfe8;
       border-radius: 6px;
       font-size: 13px;
       font-family: inherit;
+      color: #2c3e50;
+      background: white;
+      transition: all 0.25s ease;
     }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #1a2332;
+      box-shadow: 0 0 0 2px rgba(26, 35, 50, 0.08);
+    }
+
     .form-group textarea {
       resize: vertical;
-      min-height: 120px;
-      font-family: monospace;
+      min-height: 110px;
+      font-family: 'Courier New', monospace;
     }
+
+    .form-card {
+      background: white;
+      border: 1px solid #d8dfe8;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .form-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: #1a2332;
+    }
+
     .create-btn {
       width: 100%;
       padding: 12px;
-      background: #27ae60;
+      background: #1a2332;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       font-size: 13px;
-      font-weight: 600;
-      margin-top: 8px;
+      font-weight: 700;
+      margin-top: 10px;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
+
     .create-btn:hover {
-      background: #229954;
+      background: #0f1419;
+      box-shadow: 0 2px 6px rgba(26, 35, 50, 0.12);
     }
+
+    .delete-btn {
+      padding: 6px 10px;
+      background: #f5f7fa;
+      color: #d32f2f;
+      border: 1px solid #e8eef5;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      transition: all 0.25s ease;
+    }
+
+    .delete-btn:hover {
+      background: #fef2f2;
+      border-color: #f5c6c6;
+    }
+
     .empty-state {
       text-align: center;
-      color: #95a5a6;
-      padding: 40px 20px;
+      color: #a0aab8;
+      padding: 50px 20px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f8f9fa;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #c0cad5;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a0aab8;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .agenda-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 16px;
+      }
+
+      .intervention-list {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+      }
+
+      .chat-message.own,
+      .chat-message.other {
+        max-width: 85%;
+      }
     }
   </style>
 </head>
@@ -266,7 +625,7 @@
           ✓ Checklists
         </button>
         <button class="tab-btn" onclick="switchTab('planning', this)">
-          📅 Planning
+          📅 Agenda
         </button>
         <button class="tab-btn" onclick="switchTab('chat', this)">
           💬 Chat
@@ -278,47 +637,74 @@
     </div>
 
     <div class="content">
-      <!-- CHECKLIST TAB -->
+      <!-- CHECKLIST -->
       <div class="tab-content active" id="checklist">
         <div class="intervention-list" id="intervention-list"></div>
-        <div id="checklist-header">
-          <h2 id="checklist-title" style="margin-bottom: 16px; color: #2c3e50;"></h2>
-        </div>
+        <h2 class="section-title" id="checklist-title" style="display: none;"></h2>
         <div id="checklist"></div>
         <div id="checklist-empty" class="empty-state">
           Sélectionne une intervention
         </div>
       </div>
 
-      <!-- PLANNING TAB -->
+      <!-- AGENDA/PLANNING -->
       <div class="tab-content" id="planning">
-        <h2 style="margin-bottom: 16px; color: #2c3e50;">Planning du jour</h2>
-        <div id="planning-content"></div>
-        <div id="planning-empty" class="empty-state">
-          Aucune intervention programmée
-        </div>
-        <div style="margin-top: 24px; background: #ecf0f1; padding: 16px; border-radius: 6px;">
-          <h3 style="margin: 0 0 12px; color: #2c3e50;">Ajouter une intervention au planning</h3>
-          <div class="form-group">
-            <label>Heure (ex: 09:30)</label>
-            <input type="time" id="planning-time">
+        <h2 class="section-title">Agenda</h2>
+        <div class="agenda-container">
+          <div class="calendar-wrapper">
+            <div class="calendar-header">
+              <button onclick="previousMonth()">← Précédent</button>
+              <div class="calendar-month" id="calendar-month"></div>
+              <button onclick="nextMonth()">Suivant →</button>
+            </div>
+            <div class="calendar-weekdays">
+              <div class="calendar-weekday">Lun</div>
+              <div class="calendar-weekday">Mar</div>
+              <div class="calendar-weekday">Mer</div>
+              <div class="calendar-weekday">Jeu</div>
+              <div class="calendar-weekday">Ven</div>
+              <div class="calendar-weekday">Sam</div>
+              <div class="calendar-weekday">Dim</div>
+            </div>
+            <div class="calendar-days" id="calendar-days"></div>
           </div>
-          <div class="form-group">
-            <label>Nom intervention</label>
-            <input type="text" id="planning-name" placeholder="Chirurgie du genou">
+
+          <div>
+            <div class="agenda-events">
+              <div class="agenda-day-title" id="agenda-day-title">Sélectionne un jour</div>
+              <div id="agenda-events-list"></div>
+              <div id="agenda-empty" class="agenda-empty">
+                Aucune intervention ce jour
+              </div>
+            </div>
+
+            <div class="agenda-form">
+              <h3>➕ Ajouter une intervention</h3>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="planning-date">
+              </div>
+              <div class="form-group">
+                <label>Heure</label>
+                <input type="time" id="planning-time">
+              </div>
+              <div class="form-group">
+                <label>Nom intervention</label>
+                <input type="text" id="planning-name" placeholder="Ex: Chirurgie du genou">
+              </div>
+              <div class="form-group">
+                <label>Bloc</label>
+                <input type="number" id="planning-bloc" placeholder="1" min="1">
+              </div>
+              <button class="create-btn" onclick="addToPlanning()">Ajouter</button>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Bloc</label>
-            <input type="number" id="planning-bloc" placeholder="1" min="1">
-          </div>
-          <button class="create-btn" onclick="addToPlanning()">Ajouter au planning</button>
         </div>
       </div>
 
-      <!-- CHAT TAB -->
+      <!-- CHAT -->
       <div class="tab-content" id="chat">
         <div class="chat-container">
-          <h2 style="color: #2c3e50;">Chat équipe</h2>
           <div class="chat-messages" id="chat-messages"></div>
           <div class="chat-input-group">
             <input type="text" id="chat-input" placeholder="Message..." onkeypress="handleChatKeyPress(event)">
@@ -327,23 +713,17 @@
         </div>
       </div>
 
-      <!-- INTERVENTIONS TAB -->
+      <!-- INTERVENTIONS -->
       <div class="tab-content" id="interventions">
-        <h2 style="margin-bottom: 16px; color: #2c3e50;">Ajouter une intervention</h2>
-        <div style="background: #ecf0f1; padding: 16px; border-radius: 6px;">
+        <h2 class="section-title">Créer une intervention</h2>
+        <div class="form-card">
           <div class="form-group">
             <label>Nom de l'intervention</label>
             <input type="text" id="new-intervention-name" placeholder="Ex: Arthroscopie genou">
           </div>
           <div class="form-group">
-            <label>Catégorie</label>
-            <select id="new-intervention-category">
-              <option value="Table">Table</option>
-            </select>
-          </div>
-          <div class="form-group">
             <label>Items à vérifier (un par ligne)</label>
-            <textarea id="new-intervention-items" placeholder="Table 1&#10;Table 2"></textarea>
+            <textarea id="new-intervention-items" placeholder="Table 1&#10;Table 2&#10;Équipement X"></textarea>
           </div>
           <button class="create-btn" onclick="createIntervention()">Créer intervention</button>
         </div>
@@ -419,13 +799,14 @@
     };
 
     let interventions = JSON.parse(JSON.stringify(interventionsDefault));
-    let currentIntervention = null;
+    let currentIntervention = 'urologie';
     let checklist = {};
     let plannedInterventions = [];
     let chatMessages = [];
     let currentUser = 'Brancardier ' + Math.floor(Math.random() * 999);
+    let currentDate = new Date();
+    let selectedDate = null;
 
-    // Initialize
     Object.keys(interventions).forEach(key => {
       checklist[key] = {};
       interventions[key].tables.forEach(table => {
@@ -433,7 +814,6 @@
       });
     });
 
-    // Load from localStorage
     const saved = localStorage.getItem('blocprep-data');
     if (saved) {
       const data = JSON.parse(saved);
@@ -455,7 +835,7 @@
       Object.entries(interventions).forEach(([key, intervention]) => {
         const btn = document.createElement('button');
         btn.className = 'intervention-btn' + (currentIntervention === key ? ' active' : '');
-        btn.innerHTML = `${intervention.icon}<br>${intervention.label}`;
+        btn.innerHTML = `<span>${intervention.icon}</span><span>${intervention.label}</span>`;
         btn.onclick = () => {
           currentIntervention = key;
           renderInterventions();
@@ -473,7 +853,7 @@
       if (!currentIntervention) {
         container.innerHTML = '';
         empty.style.display = 'block';
-        title.textContent = '';
+        title.style.display = 'none';
         return;
       }
 
@@ -481,6 +861,7 @@
       const intervention = interventions[currentIntervention];
       const current_checklist = checklist[currentIntervention];
       title.textContent = intervention.label;
+      title.style.display = 'block';
 
       container.innerHTML = '';
       intervention.tables.forEach(table => {
@@ -506,54 +887,144 @@
       });
     }
 
-    function renderPlanning() {
-      const content = document.getElementById('planning-content');
-      const empty = document.getElementById('planning-empty');
+    // CALENDAR FUNCTIONS
+    function renderCalendar() {
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth();
+      
+      document.getElementById('calendar-month').textContent = 
+        new Date(year, month).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
 
-      if (plannedInterventions.length === 0) {
-        content.innerHTML = '';
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+      const calendarDays = document.getElementById('calendar-days');
+      calendarDays.innerHTML = '';
+
+      // Jours du mois précédent
+      for (let i = (firstDay === 0 ? 6 : firstDay - 1); i > 0; i--) {
+        const day = document.createElement('div');
+        day.className = 'calendar-day other-month';
+        day.textContent = daysInPrevMonth - i + 1;
+        calendarDays.appendChild(day);
+      }
+
+      // Jours du mois courant
+      const today = new Date();
+      for (let i = 1; i <= daysInMonth; i++) {
+        const day = document.createElement('div');
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+        
+        const isToday = dateStr === today.toISOString().split('T')[0];
+        const isSelected = selectedDate === dateStr;
+        
+        let hasEvents = plannedInterventions.some(e => e.date === dateStr);
+
+        day.className = 'calendar-day';
+        if (isToday) day.classList.add('today');
+        if (isSelected) day.classList.add('selected');
+        if (hasEvents) day.classList.add('has-events');
+
+        day.textContent = i;
+        day.onclick = () => selectDate(dateStr);
+        calendarDays.appendChild(day);
+      }
+
+      // Jours du mois suivant
+      const totalCells = calendarDays.children.length;
+      const remainingCells = 42 - totalCells;
+      for (let i = 1; i <= remainingCells; i++) {
+        const day = document.createElement('div');
+        day.className = 'calendar-day other-month';
+        day.textContent = i;
+        calendarDays.appendChild(day);
+      }
+    }
+
+    function previousMonth() {
+      currentDate.setMonth(currentDate.getMonth() - 1);
+      renderCalendar();
+    }
+
+    function nextMonth() {
+      currentDate.setMonth(currentDate.getMonth() + 1);
+      renderCalendar();
+    }
+
+    function selectDate(dateStr) {
+      selectedDate = dateStr;
+      document.getElementById('planning-date').value = dateStr;
+      renderCalendar();
+      renderAgendaEvents();
+    }
+
+    function renderAgendaEvents() {
+      const eventsList = document.getElementById('agenda-events-list');
+      const empty = document.getElementById('agenda-empty');
+      const dayTitle = document.getElementById('agenda-day-title');
+
+      if (!selectedDate) {
+        dayTitle.textContent = 'Sélectionne un jour';
+        eventsList.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+
+      const date = new Date(selectedDate + 'T00:00:00');
+      dayTitle.textContent = date.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+      const dayEvents = plannedInterventions.filter(e => e.date === selectedDate).sort((a, b) => a.time.localeCompare(b.time));
+
+      if (dayEvents.length === 0) {
+        eventsList.innerHTML = '';
         empty.style.display = 'block';
         return;
       }
 
       empty.style.display = 'none';
-      content.innerHTML = '';
-      plannedInterventions.forEach((planned, idx) => {
-        const card = document.createElement('div');
-        card.className = 'planning-card';
-        card.innerHTML = `
-          <div class="planning-info">
-            <h3>${planned.time} - ${planned.name}</h3>
-            <p>Bloc ${planned.bloc}</p>
-          </div>
-          <button class="delete-btn" onclick="deletePlanning(${idx})">Supprimer</button>
+      eventsList.innerHTML = '';
+      dayEvents.forEach((event, idx) => {
+        const eventEl = document.createElement('div');
+        eventEl.className = 'agenda-event';
+        eventEl.innerHTML = `
+          <div class="agenda-event-time">${event.time}</div>
+          <div class="agenda-event-name">${event.name}</div>
+          <div class="agenda-event-bloc">Bloc ${event.bloc}</div>
+          <button class="delete-btn" style="margin-top: 8px;" onclick="deleteEvent('${selectedDate}', ${idx})">Supprimer</button>
         `;
-        content.appendChild(card);
+        eventsList.appendChild(eventEl);
       });
     }
 
     function addToPlanning() {
+      const date = document.getElementById('planning-date').value;
       const time = document.getElementById('planning-time').value;
       const name = document.getElementById('planning-name').value.trim();
       const bloc = document.getElementById('planning-bloc').value.trim();
 
-      if (!time || !name || !bloc) {
+      if (!date || !time || !name || !bloc) {
         alert('Remplis tous les champs');
         return;
       }
 
-      plannedInterventions.push({ time, name, bloc });
+      plannedInterventions.push({ date, time, name, bloc });
+      document.getElementById('planning-date').value = '';
       document.getElementById('planning-time').value = '';
       document.getElementById('planning-name').value = '';
       document.getElementById('planning-bloc').value = '';
       saveData();
-      renderPlanning();
+      renderCalendar();
+      renderAgendaEvents();
     }
 
-    function deletePlanning(idx) {
-      plannedInterventions.splice(idx, 1);
+    function deleteEvent(date, idx) {
+      const dayEvents = plannedInterventions.filter(e => e.date === date);
+      const eventToDelete = dayEvents[idx];
+      plannedInterventions = plannedInterventions.filter(e => !(e.date === date && e.time === eventToDelete.time && e.name === eventToDelete.name));
       saveData();
-      renderPlanning();
+      renderCalendar();
+      renderAgendaEvents();
     }
 
     function renderChat() {
@@ -624,10 +1095,17 @@
       btn.classList.add('active');
 
       if (tabName === 'chat') renderChat();
-      if (tabName === 'planning') renderPlanning();
+      if (tabName === 'planning') {
+        renderCalendar();
+        renderAgendaEvents();
+      }
     }
 
-    // Initial render
+    // Set today as default selected date
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('planning-date').value = today;
+    selectedDate = today;
+
     renderInterventions();
     renderChecklist();
   </script>
